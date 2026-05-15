@@ -292,67 +292,79 @@
 <body class="text-gray-800">
 
   <!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ -->
-  <!-- Backdrop overlay para menú móvil -->
-  <div x-data x-show="$store.nav.open" @click="$store.nav.open = false"
-       class="fixed inset-0 bg-black/40 z-40 md:hidden"
-       x-transition:enter="transition duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-       x-transition:leave="transition duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-       aria-hidden="true">
-  </div>
+  <!-- Wrapper único con x-data — backdrop y nav comparten el mismo estado -->
+  <div x-data="{ open: false }">
 
-  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300" x-data x-init="$store.nav || Alpine.store('nav', { open: false })">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <div class="flex items-center justify-between h-16 sm:h-20">
-        <a href="#inicio" aria-label="EliBeauty - Inicio">
-          <img src="EliBeauty-2-01.jpg" alt="EliBeauty" class="h-12 sm:h-16 w-auto object-contain">
-        </a>
-        <div class="hidden md:flex items-center gap-8">
-          <a href="#servicios"   class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Servicios</a>
-          <a href="#precios"     class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Precios</a>
-          <a href="#galeria"     class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Galería</a>
-          <a href="#faq"         class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">FAQ</a>
-          <a href="#ubicacion"   class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Ubicación</a>
-          <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
-             target="_blank" rel="noopener"
-             class="btn-primary bg-[#a8ddb5] hover:bg-[#7ec99a] text-[#1a1a1a] font-semibold px-5 py-2.5 rounded-full text-sm transition shadow-sm cursor-pointer">
-            Reservar cita ↗
-          </a>
-        </div>
-        <button @click="$store.nav.open = !$store.nav.open"
-                :aria-expanded="$store.nav.open"
-                class="md:hidden p-3 text-gray-600 cursor-pointer rounded-lg hover:bg-gray-100 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label="Abrir menú">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path x-show="!$store.nav.open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            <path x-show="$store.nav.open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <!-- Menú móvil desplegable — fondo blanco sólido, touch targets 44px -->
-      <div x-show="$store.nav.open"
-           x-transition:enter="transition duration-200 ease-out"
-           x-transition:enter-start="opacity-0 -translate-y-2"
-           x-transition:enter-end="opacity-100 translate-y-0"
-           x-transition:leave="transition duration-150 ease-in"
-           x-transition:leave-start="opacity-100 translate-y-0"
-           x-transition:leave-end="opacity-0 -translate-y-2"
-           class="md:hidden pb-4 border-t border-gray-100 bg-white">
-        <a href="#servicios" @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Servicios</a>
-        <a href="#precios"   @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Precios</a>
-        <a href="#galeria"   @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Galería</a>
-        <a href="#faq"       @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">FAQ</a>
-        <a href="#ubicacion" @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Ubicación</a>
-        <div class="pt-2 pb-1">
-          <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
-             target="_blank" rel="noopener"
-             @click="$store.nav.open=false"
-             class="block bg-[#a8ddb5] text-[#1a1a1a] font-bold px-5 py-3.5 rounded-full text-center cursor-pointer hover:bg-[#7ec99a] transition">
-            Reservar cita ↗
-          </a>
-        </div>
-      </div>
+    <!-- Backdrop: cubre el hero cuando el menú está abierto -->
+    <div x-show="open"
+         @click="open = false"
+         x-transition:enter="transition duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-black/40 z-40 md:hidden"
+         aria-hidden="true">
     </div>
-  </nav>
+
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-16 sm:h-20">
+          <a href="#inicio" aria-label="EliBeauty - Inicio">
+            <img src="EliBeauty-2-01.jpg" alt="EliBeauty" class="h-12 sm:h-16 w-auto object-contain">
+          </a>
+          <div class="hidden md:flex items-center gap-8">
+            <a href="#servicios" class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Servicios</a>
+            <a href="#precios"   class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Precios</a>
+            <a href="#galeria"   class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Galería</a>
+            <a href="#faq"       class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">FAQ</a>
+            <a href="#ubicacion" class="nav-link text-sm text-gray-600 hover:text-[#5ab880] transition cursor-pointer">Ubicación</a>
+            <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
+               target="_blank" rel="noopener"
+               class="btn-primary bg-[#a8ddb5] hover:bg-[#7ec99a] text-[#1a1a1a] font-semibold px-5 py-2.5 rounded-full text-sm transition shadow-sm cursor-pointer">
+              Reservar cita ↗
+            </a>
+          </div>
+          <!-- Botón hamburguesa — 44×44px mínimo -->
+          <button @click="open = !open"
+                  :aria-expanded="open"
+                  class="md:hidden p-3 -mr-1 text-gray-600 cursor-pointer rounded-lg hover:bg-gray-100 transition"
+                  aria-label="Abrir menú">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              <path x-show="open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Menú desplegable móvil — fondo blanco sólido, touch targets 44px -->
+        <div x-show="open"
+             x-transition:enter="transition duration-200 ease-out"
+             x-transition:enter-start="opacity-0 -translate-y-1"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition duration-150 ease-in"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-1"
+             class="md:hidden border-t border-gray-100 pb-3">
+          <a href="#servicios" @click="open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 rounded-lg hover:text-[#5ab880] hover:bg-gray-50 transition cursor-pointer">Servicios</a>
+          <a href="#precios"   @click="open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 rounded-lg hover:text-[#5ab880] hover:bg-gray-50 transition cursor-pointer">Precios</a>
+          <a href="#galeria"   @click="open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 rounded-lg hover:text-[#5ab880] hover:bg-gray-50 transition cursor-pointer">Galería</a>
+          <a href="#faq"       @click="open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 rounded-lg hover:text-[#5ab880] hover:bg-gray-50 transition cursor-pointer">FAQ</a>
+          <a href="#ubicacion" @click="open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 rounded-lg hover:text-[#5ab880] hover:bg-gray-50 transition cursor-pointer">Ubicación</a>
+          <div class="pt-2">
+            <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
+               target="_blank" rel="noopener"
+               @click="open=false"
+               class="block bg-[#a8ddb5] hover:bg-[#7ec99a] text-[#1a1a1a] font-bold px-5 py-3.5 rounded-full text-center cursor-pointer transition">
+              Reservar cita ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+  </div>
 
   <!-- ═══════════════════════════════════ HERO ════════════════════════════════════ -->
   <section id="inicio" class="hero-bg relative min-h-[100svh] flex items-center pt-16 sm:pt-20">
