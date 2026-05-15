@@ -292,7 +292,15 @@
 <body class="text-gray-800">
 
   <!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ -->
-  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300" x-data="{ open: false }">
+  <!-- Backdrop overlay para menú móvil -->
+  <div x-data x-show="$store.nav.open" @click="$store.nav.open = false"
+       class="fixed inset-0 bg-black/40 z-40 md:hidden"
+       x-transition:enter="transition duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       aria-hidden="true">
+  </div>
+
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300" x-data x-init="$store.nav || Alpine.store('nav', { open: false })">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between h-16 sm:h-20">
         <a href="#inicio" aria-label="EliBeauty - Inicio">
@@ -310,33 +318,47 @@
             Reservar cita ↗
           </a>
         </div>
-        <button @click="open = !open" class="md:hidden p-2 text-gray-600 cursor-pointer" aria-label="Abrir menú">
+        <button @click="$store.nav.open = !$store.nav.open"
+                :aria-expanded="$store.nav.open"
+                class="md:hidden p-3 text-gray-600 cursor-pointer rounded-lg hover:bg-gray-100 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Abrir menú">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            <path x-show="open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <path x-show="!$store.nav.open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            <path x-show="$store.nav.open"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
-      <div x-show="open" x-transition class="md:hidden pb-5 border-t border-gray-100 space-y-3 pt-4">
-        <a href="#servicios" @click="open=false" class="block text-gray-600 py-1 cursor-pointer">Servicios</a>
-        <a href="#precios"   @click="open=false" class="block text-gray-600 py-1 cursor-pointer">Precios</a>
-        <a href="#galeria"   @click="open=false" class="block text-gray-600 py-1 cursor-pointer">Galería</a>
-        <a href="#faq"       @click="open=false" class="block text-gray-600 py-1 cursor-pointer">FAQ</a>
-        <a href="#ubicacion" @click="open=false" class="block text-gray-600 py-1 cursor-pointer">Ubicación</a>
-        <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
-           target="_blank" rel="noopener"
-           class="block bg-[#a8ddb5] text-[#1a1a1a] font-semibold px-5 py-3 rounded-full text-center cursor-pointer">
-          Reservar cita ↗
-        </a>
+      <!-- Menú móvil desplegable — fondo blanco sólido, touch targets 44px -->
+      <div x-show="$store.nav.open"
+           x-transition:enter="transition duration-200 ease-out"
+           x-transition:enter-start="opacity-0 -translate-y-2"
+           x-transition:enter-end="opacity-100 translate-y-0"
+           x-transition:leave="transition duration-150 ease-in"
+           x-transition:leave-start="opacity-100 translate-y-0"
+           x-transition:leave-end="opacity-0 -translate-y-2"
+           class="md:hidden pb-4 border-t border-gray-100 bg-white">
+        <a href="#servicios" @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Servicios</a>
+        <a href="#precios"   @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Precios</a>
+        <a href="#galeria"   @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Galería</a>
+        <a href="#faq"       @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">FAQ</a>
+        <a href="#ubicacion" @click="$store.nav.open=false" class="flex items-center text-gray-700 font-medium px-2 py-3 min-h-[44px] hover:text-[#5ab880] transition cursor-pointer">Ubicación</a>
+        <div class="pt-2 pb-1">
+          <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
+             target="_blank" rel="noopener"
+             @click="$store.nav.open=false"
+             class="block bg-[#a8ddb5] text-[#1a1a1a] font-bold px-5 py-3.5 rounded-full text-center cursor-pointer hover:bg-[#7ec99a] transition">
+            Reservar cita ↗
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
   <!-- ═══════════════════════════════════ HERO ════════════════════════════════════ -->
-  <section id="inicio" class="hero-bg min-h-screen flex items-center pt-16 sm:pt-20">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-24">
+  <section id="inicio" class="hero-bg relative min-h-[100svh] flex items-center pt-16 sm:pt-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-24 pb-20 sm:pb-24">
       <div class="max-w-2xl">
-        <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 text-sm text-white reveal">
+        <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full mb-5 sm:mb-6 text-sm text-white reveal">
           <span class="text-yellow-400" aria-label="5 estrellas">★★★★★</span>
           <span class="font-semibold">4.6 / 5</span>
           <span class="text-white/75">· 128 reseñas en Booksy</span>
@@ -345,19 +367,19 @@
           Centro de Estética<br>
           <em class="text-[#a8ddb5]">en Aranjuez</em>
         </h1>
-        <p class="font-script text-xl sm:text-2xl text-white/70 italic mb-5 reveal delay-2">Uñas · Depilación con Hilo · Manicura</p>
-        <p class="text-base sm:text-xl text-white/85 mb-7 leading-relaxed reveal delay-3">
+        <p class="font-script text-lg sm:text-2xl text-white/70 italic mb-4 sm:mb-5 reveal delay-2">Uñas · Depilación con Hilo · Manicura</p>
+        <p class="text-base sm:text-xl text-white/85 mb-6 sm:mb-7 leading-relaxed reveal delay-3">
           Especialistas en <strong>manicura</strong>, <strong>pedicura</strong>, <strong>uñas acrílicas</strong> y <strong>depilación con hilo</strong>. Resultados que se notan desde la primera cita.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 reveal delay-4">
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 reveal delay-4">
           <a href="https://booksy.com/es-es/34623_elibeauty_salon-de-unas_53453_cortijo-de-san-isidro#ba_s=seo"
              target="_blank" rel="noopener"
-             class="btn-primary bg-[#a8ddb5] hover:bg-[#7ec99a] text-[#1a1a1a] font-bold px-8 py-4 rounded-full text-center text-lg transition shadow-xl hover:-translate-y-0.5 cursor-pointer">
+             class="btn-primary bg-[#a8ddb5] hover:bg-[#7ec99a] text-[#1a1a1a] font-bold px-8 py-4 rounded-full text-center text-base sm:text-lg transition shadow-xl hover:-translate-y-0.5 cursor-pointer min-h-[52px] flex items-center justify-center">
             Reservar cita online
           </a>
           <a href="https://wa.me/34644864038?text=Hola%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20vuestros%20servicios%2C%20precios%20y%20disponibilidad%20en%20EliBeauty%20%F0%9F%92%85"
              target="_blank" rel="noopener"
-             class="border border-white/50 bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white font-semibold px-8 py-4 rounded-full text-center text-lg transition flex items-center justify-center gap-2 cursor-pointer">
+             class="border border-white/50 bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white font-semibold px-8 py-4 rounded-full text-center text-base sm:text-lg transition flex items-center justify-center gap-2 cursor-pointer min-h-[52px]">
             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.125 1.533 5.859L.057 23.495a.5.5 0 00.611.61l5.701-1.494A11.951 11.951 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.807 9.807 0 01-5.003-1.37l-.358-.213-3.713.973.991-3.618-.233-.373A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/>
             </svg>
@@ -367,8 +389,8 @@
         <p class="text-white/50 text-sm mt-4 reveal delay-5">Sin compromiso · Respuesta rápida</p>
       </div>
     </div>
-    <!-- scroll hint -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 reveal delay-6">
+    <!-- scroll hint — oculto en móvil para evitar solapamiento con botones CTA -->
+    <div class="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 reveal delay-6">
       <div class="flex flex-col items-center gap-1 text-white/40">
         <span class="text-xs tracking-widest uppercase">Descubre</span>
         <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
